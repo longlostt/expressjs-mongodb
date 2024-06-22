@@ -56,4 +56,4 @@ Product.insertMany(seedProducts) // if anything does not pass validation, NOTHIN
     })
     .catch(e => {
         console.log(e)
-    })``
+    })
