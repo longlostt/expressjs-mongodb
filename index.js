@@ -23,9 +23,22 @@ app.use(methodOverride('_method'))
 const categories = ['fruit', 'vegetable', 'dairy'] // add categories here
 
 app.get('/products', async (req, res) => {
-    const products = await Product.find({})
-    res.render('products/index', { products })
+    // const { category = ''} = req.query;
+    // const products = await Product.find({})
+    // res.render('products/index', { products, category })
+    
+    function capitalizeFirstLetter(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
+    const { category } = req.query;
+    if (category) {
+        const products = await Product.find({category: category})
+        res.render('products/index', { products, category, capitalizeFirstLetter })
+    } else {
+        const products = await Product.find({})
+        res.render('products/index', { products, category })
+    }
 })
 
 app.get('/products/new', (req, res) => {

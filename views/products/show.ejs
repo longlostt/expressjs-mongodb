@@ -8,12 +8,12 @@
 </head>
 
 <body>
-    <h1>Product</h1>
+    <h1>Product Info:</h1>
     <ul>
         <li>
             <%= foundProduct.name %> - 
             <b>$ <%= foundProduct.price %></b> - 
-           <i> <%= foundProduct.category %></i>
+           <i> <a href="/products?category=<%=foundProduct.category%>"><%= foundProduct.category %></a></i>
         </li>
     </ul>
     <button><a style="text-decoration: none; color: inherit;" href="/products">Back</a></button><br>
