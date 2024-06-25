@@ -16,7 +16,11 @@
            <i> <%= foundProduct.category %></i>
         </li>
     </ul>
-    <a href="/products">Back</a>
+    <button><a style="text-decoration: none; color: inherit;" href="/products">Back</a></button><br>
+    <button><a style="text-decoration: none; color: inherit;" href='/products/<%=foundProduct._id%>/edit'>Edit</a></button>
+    <form action="/products/<%=foundProduct._id%>?_method=DELETE" method="post">
+        <button style="text-decoration: none; color: inherit;">Delete</button>
+    </form>
 </body>
 
 </html>
