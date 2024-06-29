@@ -3,6 +3,7 @@ const app = express()
 const path = require('path')
 const mongoose = require('mongoose');
 const methodOverride = require('method-override')
+const appError = require('./appError')
 
 const Product = require('./models/product')
 
@@ -42,6 +43,7 @@ app.get('/products', async (req, res) => {
 })
 
 app.get('/products/new', (req, res) => {
+    throw new appError('not allowed', 401)
     res.render('products/new', { categories })
 })
 
@@ -51,15 +53,21 @@ app.post('/products', async (req, res) => {
     res.redirect(`./products/${newProduct.id}`)
 })
 
-app.get('/products/:id', async (req, res) => {
+app.get('/products/:id', async (req, res, next) => {
     const { id } = req.params;
     const foundProduct = await Product.findById(id)
-    res.render('products/show', { foundProduct })
+    if (!foundProduct) {
+      return next(new appError('Product not found', 404)) // errors for async function --> "return next()"" instead of "throw" return to stop the execution of async code. 
+    }
+    res.render('products/show', { foundProduct }) // WILL run if not returned before
 })
 
-app.get('/products/:id/edit', async (req, res) => {
+app.get('/products/:id/edit', async (req, res, next) => {
     const { id } = req.params;
     const foundProduct = await Product.findById(id)
+    if (!foundProduct) {
+        return next(new appError('Product not found', 404)) 
+    }
     res.render('products/edit', { foundProduct, categories })
 })
 
@@ -74,6 +82,11 @@ app.delete('/products/:id/', async(req,res) => {
     const foundProduct = await Product.findByIdAndDelete(id)
     res.redirect(`/products/`)
 } )
+
+app.use((err,req,res,next) => {
+    const { status = 500, message = 'Something went wrong!'} = err;
+    res.status(status).send(message)
+})
 
 app.listen(3000, () => {
     console.log('3000 port')
